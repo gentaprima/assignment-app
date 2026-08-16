@@ -617,7 +617,7 @@
                             @endforelse
                         </tbody>
                     </table>
-                </div
+                </div>
                 {{-- MOBILE --}}
                 <div class="divide-y divide-gray-100 md:hidden">
                     @foreach($reports as $report)

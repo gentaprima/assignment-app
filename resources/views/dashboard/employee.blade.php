@@ -226,18 +226,18 @@
 
                     @if($todaySchedule)
 
-                        @if($todaySchedule->status === 'scheduled' && $todaySchedule->shift)
+                        @if($todaySchedule->status === 'scheduled' && $todaySchedule->start_time && $todaySchedule->end_time)
 
                             <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
 
-                                {{ \Carbon\Carbon::parse($todaySchedule->shift->start_time)->format('H:i') }}
+                                {{ \Carbon\Carbon::parse($todaySchedule->start_time)->format('H:i') }}
 
                             </h2>
 
                             <p class="mt-1 text-sm text-gray-500">
 
                                 Sampai
-                                {{ \Carbon\Carbon::parse($todaySchedule->shift->end_time)->format('H:i') }}
+                                {{ \Carbon\Carbon::parse($todaySchedule->end_time)->format('H:i') }}
 
                             </p>
 
@@ -595,15 +595,15 @@
 
                         </p>
 
-                        @if($schedule->shift)
+                        @if($schedule->status === 'scheduled' && $schedule->start_time && $schedule->end_time)
 
                             <p class="truncate text-xs text-gray-500 sm:text-sm">
 
-                                {{ \Carbon\Carbon::parse($schedule->shift->start_time)->format('H:i') }}
+                                {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}
 
                                 -
 
-                                {{ \Carbon\Carbon::parse($schedule->shift->end_time)->format('H:i') }}
+                                {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}
 
                             </p>
 
