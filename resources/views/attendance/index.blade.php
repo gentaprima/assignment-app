@@ -479,8 +479,13 @@
                 {{-- CAMERA SELFIE --}}
                 <div id="cameraContainer" class="mt-5 hidden">
                     <div class="overflow-hidden rounded-2xl bg-black">
-                        <video id="cameraPreview" class="h-auto max-h-[500px] w-full object-cover" autoplay playsinline
-                            muted></video>
+                        <div class="relative overflow-hidden">
+                            <video id="cameraPreview" class="hidden" autoplay playsinline muted>
+                            </video>
+
+                            <canvas id="cameraLivePreview" class="h-auto max-h-[500px] w-full object-cover">
+                            </canvas>
+                        </div>
                     </div>
 
                     <canvas id="cameraCanvas" class="hidden"></canvas>
@@ -541,16 +546,16 @@
                     @elseif(!$attendance?->check_in_at)
 
                         <!-- <button type="button" onclick="getLocationAndCheckIn()"
-                                                                                                    class="flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-red-600 font-semibold text-white shadow-sm transition hover:bg-red-700 active:bg-red-800">
+                                                                                                                                                                                                                                                                            class="flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-red-600 font-semibold text-white shadow-sm transition hover:bg-red-700 active:bg-red-800">
 
-                                                                                                    <span class="material-icons">
-                                                                                                        fingerprint
-                                                                                                    </span>
+                                                                                                                                                                                                                                                                            <span class="material-icons">
+                                                                                                                                                                                                                                                                                fingerprint
+                                                                                                                                                                                                                                                                            </span>
 
-                                                                                                    ABEN MASUK
+                                                                                                                                                                                                                                                                            ABEN MASUK
 
-                                                                                                </button>
-                                                                                                 -->
+                                                                                                                                                                                                                                                                        </button>
+                                                                                                                                                                                                                                                                         -->
 
                         <button type="button" onclick="startAttendance('check-in')"
                             class="flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-red-600 font-semibold text-white shadow-sm transition hover:bg-red-700 active:bg-red-800">
@@ -564,15 +569,15 @@
                     @elseif(!$attendance?->check_out_at)
 
                         <!-- <button type="button" onclick="getLocationAndCheckOut()"
-                                                                                        class="flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-orange-500 font-semibold text-white shadow-sm transition hover:bg-orange-600 active:bg-orange-700">
+                                                                                                                                                                                                                                                                class="flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-orange-500 font-semibold text-white shadow-sm transition hover:bg-orange-600 active:bg-orange-700">
 
-                                                                                        <span class="material-icons">
-                                                                                            fingerprint
-                                                                                        </span>
+                                                                                                                                                                                                                                                                <span class="material-icons">
+                                                                                                                                                                                                                                                                    fingerprint
+                                                                                                                                                                                                                                                                </span>
 
-                                                                                        ABSEN PULANG
+                                                                                                                                                                                                                                                                ABSEN PULANG
 
-                                                                                    </button> -->
+                                                                                                                                                                                                                                                            </button> -->
 
                         <button type="button" onclick="startAttendance('check-out')"
                             class="flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-orange-500 font-semibold text-white shadow-sm transition hover:bg-orange-600 active:bg-orange-700">
@@ -617,6 +622,7 @@
         let cameraStream = null;
         let attendanceType = null;
         let selfieData = null;
+        let livePreviewAnimation = null;
 
         const csrfToken = document
             .querySelector('meta[name="csrf-token"]')
@@ -670,21 +676,47 @@
             }
 
             cameraStream = await navigator.mediaDevices.getUserMedia({
+
                 video: {
-                    facingMode: 'user',
+                    facingMode: {
+                        ideal: 'user'
+                    },
+
                     width: {
                         ideal: 1280
                     },
+
                     height: {
                         ideal: 720
                     }
                 },
+
                 audio: false
             });
 
             const video = document.getElementById('cameraPreview');
+            const canvas = document.getElementById('cameraLivePreview');
 
             video.srcObject = cameraStream;
+
+            await video.play();
+
+            /*
+            |--------------------------------------------------------------------------
+            | SET CANVAS
+            |--------------------------------------------------------------------------
+            */
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            /*
+            |--------------------------------------------------------------------------
+            | START LIVE PREVIEW
+            |--------------------------------------------------------------------------
+            */
+
+            startLivePreview();
 
             document
                 .getElementById('cameraContainer')
@@ -693,8 +725,6 @@
             document
                 .getElementById('photoPreviewContainer')
                 .classList.add('hidden');
-
-            video.play();
         }
 
 
@@ -727,6 +757,17 @@
 
             const context = canvas.getContext('2d');
 
+            /*
+            |--------------------------------------------------------------------------
+            | AMBIL FOTO TANPA MIRROR
+            |--------------------------------------------------------------------------
+            */
+
+            context.save();
+
+            context.translate(canvas.width, 0);
+            context.scale(-1, 1);
+
             context.drawImage(
                 video,
                 0,
@@ -735,12 +776,32 @@
                 canvas.height
             );
 
+            context.restore();
+
+            /*
+            |--------------------------------------------------------------------------
+            | CONVERT KE BASE64
+            |--------------------------------------------------------------------------
+            */
+
             selfieData = canvas.toDataURL(
                 'image/jpeg',
                 0.8
             );
 
-            document.getElementById('photoPreview').src = selfieData;
+            /*
+            |--------------------------------------------------------------------------
+            | TAMPILKAN PREVIEW FOTO
+            |--------------------------------------------------------------------------
+            */
+
+            const photoPreview = document.getElementById('photoPreview');
+
+            photoPreview.src = selfieData;
+
+            // Jangan mirror hasil foto
+            photoPreview.style.transform = 'none';
+            photoPreview.style.webkitTransform = 'none';
 
             document
                 .getElementById('cameraContainer')
@@ -791,10 +852,34 @@
         |--------------------------------------------------------------------------
         */
         function stopCamera() {
+
+            /*
+            |--------------------------------------------------------------------------
+            | STOP LIVE PREVIEW
+            |--------------------------------------------------------------------------
+            */
+
+            if (livePreviewAnimation) {
+
+                cancelAnimationFrame(
+                    livePreviewAnimation
+                );
+
+                livePreviewAnimation = null;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | STOP CAMERA STREAM
+            |--------------------------------------------------------------------------
+            */
+
             if (cameraStream) {
+
                 cameraStream
                     .getTracks()
                     .forEach(track => track.stop());
+
                 cameraStream = null;
             }
         }
@@ -822,11 +907,11 @@
             );
             button.disabled = true;
             button.innerHTML = `
-                        <span class="material-icons animate-spin align-middle">
-                            refresh
-                        </span>
-                        Memproses...
-                    `;
+                                                                                <span class="material-icons animate-spin align-middle">
+                                                                                    refresh
+                                                                                </span>
+                                                                                Memproses...
+                                                                            `;
             try {
                 updateLocationStatus(
                     'Mengambil lokasi GPS...',
@@ -903,48 +988,48 @@
                             title: 'Absen Berhasil',
 
                             html: `
-                                        <div class="text-center">
+                                                                                                <div class="text-center">
 
-                                            <p class="text-gray-600">
-                                                Anda berhasil melakukan absen masuk.
-                                            </p>
+                                                                                                    <p class="text-gray-600">
+                                                                                                        Anda berhasil melakukan absen masuk.
+                                                                                                    </p>
 
-                                            <div class="mt-4 rounded-xl bg-orange-50 p-4">
+                                                                                                    <div class="mt-4 rounded-xl bg-orange-50 p-4">
 
-                                                <p class="text-sm text-gray-500">
-                                                    Status
-                                                </p>
+                                                                                                        <p class="text-sm text-gray-500">
+                                                                                                            Status
+                                                                                                        </p>
 
-                                                <p class="mt-1 font-semibold text-orange-600">
-                                                    Terlambat
-                                                </p>
+                                                                                                        <p class="mt-1 font-semibold text-orange-600">
+                                                                                                            Terlambat
+                                                                                                        </p>
 
-                                                <p class="mt-2 text-sm text-gray-600">
-                                                    ${data.attendance.notes ?? ''}
-                                                </p>
+                                                                                                        <p class="mt-2 text-sm text-gray-600">
+                                                                                                            ${data.attendance.notes ?? ''}
+                                                                                                        </p>
 
-                                            </div>
+                                                                                                    </div>
 
-                                            <div class="mt-4 space-y-1 text-sm text-gray-500">
+                                                                                                    <div class="mt-4 space-y-1 text-sm text-gray-500">
 
-                                                <p>
-                                                    Jam masuk:
-                                                    <strong class="text-gray-900">
-                                                        ${data.attendance.check_in_at}
-                                                    </strong>
-                                                </p>
+                                                                                                        <p>
+                                                                                                            Jam masuk:
+                                                                                                            <strong class="text-gray-900">
+                                                                                                                ${data.attendance.check_in_at}
+                                                                                                            </strong>
+                                                                                                        </p>
 
-                                                <p>
-                                                    Jarak:
-                                                    <strong class="text-gray-900">
-                                                        ${data.attendance.distance} meter
-                                                    </strong>
-                                                </p>
+                                                                                                        <p>
+                                                                                                            Jarak:
+                                                                                                            <strong class="text-gray-900">
+                                                                                                                ${data.attendance.distance} meter
+                                                                                                            </strong>
+                                                                                                        </p>
 
-                                            </div>
+                                                                                                    </div>
 
-                                        </div>
-                                    `,
+                                                                                                </div>
+                                                                                            `,
 
                             showConfirmButton: true,
 
@@ -966,28 +1051,28 @@
                             title: 'Absen Berhasil',
 
                             html: `
-                                        <p class="text-gray-600">
-                                            Absen masuk berhasil dicatat.
-                                        </p>
+                                                                                                <p class="text-gray-600">
+                                                                                                    Absen masuk berhasil dicatat.
+                                                                                                </p>
 
-                                        <div class="mt-4 space-y-2 text-sm text-gray-500">
+                                                                                                <div class="mt-4 space-y-2 text-sm text-gray-500">
 
-                                            <p>
-                                                Jam masuk:
-                                                <strong class="text-gray-900">
-                                                    ${data.attendance.check_in_at}
-                                                </strong>
-                                            </p>
+                                                                                                    <p>
+                                                                                                        Jam masuk:
+                                                                                                        <strong class="text-gray-900">
+                                                                                                            ${data.attendance.check_in_at}
+                                                                                                        </strong>
+                                                                                                    </p>
 
-                                            <p>
-                                                Jarak:
-                                                <strong class="text-gray-900">
-                                                    ${data.attendance.distance} meter
-                                                </strong>
-                                            </p>
+                                                                                                    <p>
+                                                                                                        Jarak:
+                                                                                                        <strong class="text-gray-900">
+                                                                                                            ${data.attendance.distance} meter
+                                                                                                        </strong>
+                                                                                                    </p>
 
-                                        </div>
-                                    `,
+                                                                                                </div>
+                                                                                            `,
 
                             showConfirmButton: true,
 
@@ -1018,28 +1103,28 @@
                         title: 'Absen Pulang Berhasil',
 
                         html: `
-                                    <p class="text-gray-600">
-                                        Absen pulang berhasil dicatat.
-                                    </p>
+                                                                                            <p class="text-gray-600">
+                                                                                                Absen pulang berhasil dicatat.
+                                                                                            </p>
 
-                                    <div class="mt-4 space-y-2 text-sm text-gray-500">
+                                                                                            <div class="mt-4 space-y-2 text-sm text-gray-500">
 
-                                        <p>
-                                            Jam pulang:
-                                            <strong class="text-gray-900">
-                                                ${data.attendance.check_out_at}
-                                            </strong>
-                                        </p>
+                                                                                                <p>
+                                                                                                    Jam pulang:
+                                                                                                    <strong class="text-gray-900">
+                                                                                                        ${data.attendance.check_out_at}
+                                                                                                    </strong>
+                                                                                                </p>
 
-                                        <p>
-                                            Jarak:
-                                            <strong class="text-gray-900">
-                                                ${data.attendance.distance} meter
-                                            </strong>
-                                        </p>
+                                                                                                <p>
+                                                                                                    Jarak:
+                                                                                                    <strong class="text-gray-900">
+                                                                                                        ${data.attendance.distance} meter
+                                                                                                    </strong>
+                                                                                                </p>
 
-                                    </div>
-                                `,
+                                                                                            </div>
+                                                                                        `,
 
                         showConfirmButton: true,
 
@@ -1084,8 +1169,8 @@
                 button.disabled = false;
 
                 button.innerHTML = `
-                            Konfirmasi Absen
-                        `;
+                                                                                    Konfirmasi Absen
+                                                                                `;
 
             }
         }
@@ -1207,16 +1292,84 @@
             }
 
             statusElement.innerHTML = `
-                        <span class="material-icons ${className}">
-                            ${icon}
-                        </span>
+                                                                                <span class="material-icons ${className}">
+                                                                                    ${icon}
+                                                                                </span>
 
-                        <span class="${className}">
-                            ${message}
-                        </span>
-                    `;
+                                                                                <span class="${className}">
+                                                                                    ${message}
+                                                                                </span>
+                                                                            `;
         }
 
+
+        function startLivePreview() {
+
+            const video = document.getElementById('cameraPreview');
+            const canvas = document.getElementById('cameraLivePreview');
+
+            const context = canvas.getContext('2d');
+
+            function drawFrame() {
+
+                if (!cameraStream) {
+                    return;
+                }
+
+                if (!video.videoWidth || !video.videoHeight) {
+
+                    livePreviewAnimation =
+                        requestAnimationFrame(drawFrame);
+
+                    return;
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | SESUAIKAN CANVAS DENGAN VIDEO
+                |--------------------------------------------------------------------------
+                */
+
+                if (
+                    canvas.width !== video.videoWidth ||
+                    canvas.height !== video.videoHeight
+                ) {
+
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | BALIK HORIZONTAL
+                |--------------------------------------------------------------------------
+                |
+                | Karena kamera depan kamu menghasilkan preview mirror,
+                | kita balik frame sebelum ditampilkan.
+                |
+                */
+
+                context.save();
+
+                context.translate(canvas.width, 0);
+                context.scale(-1, 1);
+
+                context.drawImage(
+                    video,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+
+                context.restore();
+
+                livePreviewAnimation =
+                    requestAnimationFrame(drawFrame);
+            }
+
+            drawFrame();
+        }
     </script>
 
 @endsection
