@@ -18,6 +18,9 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     {{-- Tailwind CDN untuk sementara --}}
     <script src="https://cdn.tailwindcss.com"></script>
+    {{-- PWA --}}
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <link rel="apple-touch-icon" href="{{ asset('icons/icon-192.png') }}">
 </head>
 
 <body class="m-0 overflow-hidden bg-gray-50 antialiased">
