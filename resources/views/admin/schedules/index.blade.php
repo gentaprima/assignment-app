@@ -46,15 +46,14 @@
 
 
                 {{-- MINGGU --}}
+                <div class="w-full min-w-0">
 
-                <div>
-
-                    <label class="mb-2 block text-sm font-medium text-gray-700">
+                    <label for="week" class="mb-2 block text-sm font-medium text-gray-700">
                         Minggu
                     </label>
 
-                    <input type="date" name="week" value="{{ $weekStart->format('Y-m-d') }}"
-                        class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:border-red-500 focus:ring-red-500">
+                    <input type="date" name="week" id="week" value="{{ $weekStart->format('Y-m-d') }}"
+                        class="block h-12 w-full min-w-0 appearance-none rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm leading-5 text-gray-900 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-500/20">
 
                 </div>
 
@@ -114,7 +113,7 @@
         {{-- INFO MINGGU --}}
         {{-- ======================================== --}}
 
-        <div class="rounded-2xl border border-red-100 bg-red-50 p-5">
+        <!-- <div class="rounded-2xl border border-red-100 bg-red-50 p-5">
 
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
@@ -200,7 +199,7 @@
 
             </div>
 
-        </div>
+        </div> -->
 
 
         {{-- ======================================== --}}
@@ -297,14 +296,14 @@
                                                         {{ $assignment->start_time
                                             ? \Carbon\Carbon::parse($assignment->start_time)->format('H:i')
                                             : '--:--'
-                                                                                                                                            }}
+                                                                                                                                                                                            }}
 
                                                         -
 
                                                         {{ $assignment->end_time
                                             ? \Carbon\Carbon::parse($assignment->end_time)->format('H:i')
                                             : '--:--'
-                                                                                                                                            }}
+                                                                                                                                                                                            }}
 
                                                     </p>
 
@@ -507,14 +506,14 @@
 
 
                         {{-- TANGGAL --}}
-                        <div>
+                        <div class="w-full">
 
-                            <label class="mb-2 block text-sm font-medium text-gray-700">
+                            <label for="workDate" class="mb-2 block text-sm font-medium text-gray-700">
                                 Tanggal Kerja
                             </label>
 
                             <input type="date" name="work_date" id="workDate" value="{{ old('work_date') }}" required
-                                class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:border-red-500 focus:ring-red-500">
+                                class="block h-12 w-full min-w-0 appearance-none rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-500/20">
 
                         </div>
 
@@ -526,7 +525,7 @@
                             </label>
 
                             <input type="text" name="start_time" id="startTime" placeholder="07:00" maxlength="5"
-                                inputmode="numeric" autocomplete="off"
+                                autocomplete="off"
                                 class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:border-red-500 focus:ring-red-500">
 
                             <p class="mt-1 text-xs text-gray-400">
@@ -542,7 +541,7 @@
                             </label>
 
                             <input type="text" name="end_time" id="endTime" placeholder="15:00" maxlength="5"
-                                inputmode="numeric" autocomplete="off"
+                                autocomplete="off"
                                 class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:border-red-500 focus:ring-red-500">
 
                             <p class="mt-1 text-xs text-gray-400">
