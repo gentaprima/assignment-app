@@ -961,7 +961,7 @@
                                 </label>
 
                                 <input type="date" name="start_date" min="{{ now()->format('Y-m-d') }}" required
-                                    class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none focus:border-red-500 focus:ring-2 focus:ring-red-100">
+                                    class="block h-12 w-full min-w-0 max-w-full appearance-none rounded-xl border border-gray-300 bg-white px-3 py-3 text-sm text-gray-700 outline-none focus:border-red-500 focus:ring-2 focus:ring-red-100">
 
                             </div>
 
@@ -973,7 +973,7 @@
                                 </label>
 
                                 <input type="date" name="end_date" min="{{ now()->format('Y-m-d') }}" required
-                                    class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none focus:border-red-500 focus:ring-2 focus:ring-red-100">
+                                    class="block h-12 w-full min-w-0 max-w-full appearance-none rounded-xl border border-gray-300 bg-white px-3 py-3 text-sm text-gray-700 outline-none focus:border-red-500 focus:ring-2 focus:ring-red-100>
 
                             </div>
 
