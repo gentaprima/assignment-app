@@ -233,10 +233,10 @@
                                 <span>Absensi</span>
                             </a>
 
-                            <a href="#" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50">
+                            <!-- <a href="#" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50">
                                 <span class="material-icons">edit_note</span>
                                 <span>Perbaikan Absensi</span>
-                            </a>
+                            </a> -->
                 @endif
                 {{-- ========================= --}}
                 {{-- MENU KARYAWAN & PIC--}}
