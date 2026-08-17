@@ -722,7 +722,7 @@
 
                                 <p class="mt-1 text-sm font-semibold text-gray-900">
 
-                                    {{ $typeLabels[$leaveRequest->type] ?? ucfirst($leaveRequest->type) }}
+                                     {{ $leaveRequest->leaveType?->name ?? '-' }}
 
                                 </p>
 
@@ -770,7 +770,7 @@
                                         {{ $leaveRequest->id }},
                                         @js($leaveRequest->user?->name ?? auth()->user()->name),
                                         @js($leaveRequest->branch?->name ?? '-'),
-                                        @js($typeLabels[$leaveRequest->type] ?? ucfirst($leaveRequest->type)),
+                                        @js($leaveRequest->leaveType?->name ?? '-'),
                                         @js($leaveRequest->start_date?->format('d M Y')),
                                         @js($leaveRequest->end_date?->format('d M Y')),
                                         @js($leaveRequest->reason ?? '-'),
