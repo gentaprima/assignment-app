@@ -37,6 +37,13 @@
 </head>
 
 <body>
+    {{-- PULL TO REFRESH --}}
+    <div id="pullToRefresh"
+        class="pointer-events-none fixed left-1/2 top-4 z-[9999] flex h-10 w-10 -translate-x-1/2 -translate-y-16 items-center justify-center rounded-full bg-white shadow-lg transition-transform duration-200">
+        <span id="pullRefreshIcon" class="material-icons text-xl text-red-600">
+            refresh
+        </span>
+    </div>
 
     <div class="min-h-screen">
         {{-- MOBILE OVERLAY --}}
@@ -80,7 +87,7 @@
                 @if(auth()->user()->role === 'admin')
                             {{-- Karyawan --}}
                             <a href="/admin/employees" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50
-                                    {{ request()->routeIs('admin.employees')
+                                                            {{ request()->routeIs('admin.employees')
                     ? 'bg-red-50 text-red-600'
                     : 'text-gray-600 hover:bg-gray-50' }}">
                                 <span class="material-icons text-xl">
@@ -93,7 +100,7 @@
                             </a>
                             {{-- Cabang --}}
                             <a href="/admin/branches" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50
-                                     {{ request()->routeIs('admin.branches')
+                                                             {{ request()->routeIs('admin.branches')
                     ? 'bg-red-50 text-red-600'
                     : 'text-gray-600 hover:bg-gray-50' }}">
                                 <span class="material-icons text-xl">
@@ -106,17 +113,17 @@
                             </a>
                             {{-- Absensi --}}
                             <!-- <a href="#" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50">
-                                            <span class="material-icons text-xl">
-                                                how_to_reg
-                                            </span>
+                                                                    <span class="material-icons text-xl">
+                                                                        how_to_reg
+                                                                    </span>
 
-                                            <span class="font-medium">
-                                                Absensi
-                                            </span>
-                                        </a> -->
+                                                                    <span class="font-medium">
+                                                                        Absensi
+                                                                    </span>
+                                                                </a> -->
                             {{-- Jadwal --}}
                             <a href="/admin/schedules" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50
-                                    {{ request()->routeIs('admin.schedules')
+                                                            {{ request()->routeIs('admin.schedules')
                     ? 'bg-red-50 text-red-600'
                     : 'text-gray-600 hover:bg-gray-50' }}">
                                 <span class="material-icons text-xl">
@@ -129,7 +136,7 @@
                             </a>
                             {{-- Izin --}}
                             <a href="{{ route('admin.leave-requests.index') }}" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50
-                                    {{ request()->routeIs('admin.leave-requests.*')
+                                                            {{ request()->routeIs('admin.leave-requests.*')
                     ? 'bg-red-50 text-red-600'
                     : 'text-gray-600 hover:bg-gray-50' }}">
                                 <span class="material-icons text-xl">
@@ -142,20 +149,20 @@
                             </a>
                             {{-- Perbaikan --}}
                             <!-- <a href="#" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50
-                                    {{ request()->routeIs('admin.corrections')
-                    ? 'bg-red-50 text-red-600'
-                    : 'text-gray-600 hover:bg-gray-50' }}">
-                                <span class="material-icons text-xl">
-                                    edit_note
-                                </span>
+                                                            {{ request()->routeIs('admin.corrections')
+                                            ? 'bg-red-50 text-red-600'
+                                            : 'text-gray-600 hover:bg-gray-50' }}">
+                                                        <span class="material-icons text-xl">
+                                                            edit_note
+                                                        </span>
 
-                                <span class="font-medium">
-                                    Perbaikan Absensi
-                                </span>
-                            </a> -->
+                                                        <span class="font-medium">
+                                                            Perbaikan Absensi
+                                                        </span>
+                                                    </a> -->
                             {{-- Laporan --}}
                             <a href="{{ route('reports.index') }}" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50
-                                    {{ request()->routeIs('reports.index')
+                                                            {{ request()->routeIs('reports.index')
                     ? 'bg-red-50 text-red-600'
                     : 'text-gray-600 hover:bg-gray-50' }}">
                                 <span class="material-icons">assessment</span>
@@ -169,7 +176,7 @@
                 @if(auth()->user()->role === 'pic')
 
                             <a href="{{ route('my.schedule') }}" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50
-                                                                       {{ request()->routeIs('my.schedule')
+                                                                                               {{ request()->routeIs('my.schedule')
                     ? 'bg-red-50 text-red-600'
                     : 'text-gray-600 hover:bg-gray-50' }}">
 
@@ -182,7 +189,7 @@
                             </a>
 
                             <a href="{{ route('pic.schedules') }}" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50
-                                            {{ request()->routeIs('pic.schedules')
+                                                                    {{ request()->routeIs('pic.schedules')
                     ? 'bg-red-50 text-red-600'
                     : 'text-gray-600 hover:bg-gray-50' }}">
                                 <span class="material-icons">calendar_month</span>
@@ -190,7 +197,7 @@
                             </a>
 
                             <a href="{{ route('attendance') }}" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50
-                                            {{ request()->routeIs('attendance')
+                                                                    {{ request()->routeIs('attendance')
                     ? 'bg-red-50 text-red-600'
                     : 'text-gray-600 hover:bg-gray-50' }}">
                                 <span class="material-icons">
@@ -212,7 +219,7 @@
                 @if(auth()->user()->role === 'employee')
 
                             <a href="{{ route('my.schedule') }}" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50
-                                                                    {{ request()->routeIs('my.schedule')
+                                                                                            {{ request()->routeIs('my.schedule')
                     ? 'bg-red-50 text-red-600'
                     : 'text-gray-600 hover:bg-gray-50' }}">
 
@@ -225,38 +232,38 @@
                             </a>
 
                             <a href="{{ route('attendance') }}" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50
-                                                                                                {{ request()->routeIs('attendance')
+                                                                                                                        {{ request()->routeIs('attendance')
                     ? 'bg-red-50 text-red-600'
                     : 'text-gray-600 hover:bg-gray-50' }}
-                                                                                            ">
+                                                                                                                    ">
                                 <span class="material-icons">location_on</span>
                                 <span>Absensi</span>
                             </a>
 
                             <!-- <a href="#" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50">
-                                <span class="material-icons">edit_note</span>
-                                <span>Perbaikan Absensi</span>
-                            </a> -->
+                                                        <span class="material-icons">edit_note</span>
+                                                        <span>Perbaikan Absensi</span>
+                                                    </a> -->
                 @endif
                 {{-- ========================= --}}
                 {{-- MENU KARYAWAN & PIC--}}
-                {{-- ========================= --}}   
+                {{-- ========================= --}}
                 @if(in_array(auth()->user()->role, ['employee', 'pic']))
 
-                                <a href="{{ route('leave-requests.index') }}" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50
-                       {{ request()->routeIs('leave-requests.*')
-                        ? 'bg-red-50 text-red-600'
-                        : 'text-gray-600 hover:bg-gray-50' }}">
+                            <a href="{{ route('leave-requests.index') }}" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50
+                                               {{ request()->routeIs('leave-requests.*')
+                    ? 'bg-red-50 text-red-600'
+                    : 'text-gray-600 hover:bg-gray-50' }}">
 
-                                    <span class="material-icons">
-                                        event_busy
-                                    </span>
+                                <span class="material-icons">
+                                    event_busy
+                                </span>
 
-                                    <span>
-                                        Izin
-                                    </span>
+                                <span>
+                                    Izin
+                                </span>
 
-                                </a>
+                            </a>
 
                 @endif
                 {{-- Divider --}}
@@ -351,5 +358,174 @@
             </main>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const indicator = document.getElementById('pullToRefresh');
+            const icon = document.getElementById('pullRefreshIcon');
+
+            if (!indicator || !icon) {
+                return;
+            }
+
+            let startY = 0;
+            let currentY = 0;
+            let pulling = false;
+            let refreshing = false;
+
+            const triggerDistance = 90;
+            const maxDistance = 130;
+
+
+            document.addEventListener('touchstart', function (event) {
+
+                if (refreshing) {
+                    return;
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | Hanya aktif kalau halaman sedang paling atas
+                |--------------------------------------------------------------------------
+                */
+
+                if (window.scrollY <= 0) {
+
+                    startY = event.touches[0].clientY;
+                    pulling = true;
+
+                }
+
+            }, {
+                passive: true
+            });
+
+
+            document.addEventListener('touchmove', function (event) {
+
+                if (!pulling || refreshing) {
+                    return;
+                }
+
+                currentY = event.touches[0].clientY;
+
+                const distance = currentY - startY;
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | User menarik ke bawah
+                |--------------------------------------------------------------------------
+                */
+
+                if (distance > 0 && window.scrollY <= 0) {
+
+                    const pullDistance = Math.min(
+                        distance * 0.5,
+                        maxDistance
+                    );
+
+                    indicator.style.transform =
+                        `translate(-50%, ${pullDistance - 55}px)`;
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Rotate icon
+                    |--------------------------------------------------------------------------
+                    */
+
+                    icon.style.transform =
+                        `rotate(${pullDistance * 3}deg)`;
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Sudah cukup untuk refresh
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (distance >= triggerDistance) {
+
+                        icon.textContent = 'sync';
+
+                    } else {
+
+                        icon.textContent = 'refresh';
+
+                    }
+
+                }
+
+            }, {
+                passive: true
+            });
+
+
+            document.addEventListener('touchend', function () {
+
+                if (!pulling || refreshing) {
+                    return;
+                }
+
+                const distance = currentY - startY;
+
+                pulling = false;
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Refresh
+                |--------------------------------------------------------------------------
+                */
+
+                if (distance >= triggerDistance) {
+
+                    refreshing = true;
+
+                    indicator.style.transform =
+                        'translate(-50%, 10px)';
+
+                    icon.textContent = 'refresh';
+
+                    icon.classList.add('animate-spin');
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Reload halaman
+                    |--------------------------------------------------------------------------
+                    */
+
+                    setTimeout(function () {
+
+                        window.location.reload();
+
+                    }, 400);
+
+                } else {
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Kembalikan indikator
+                    |--------------------------------------------------------------------------
+                    */
+
+                    indicator.style.transform =
+                        'translate(-50%, -64px)';
+
+                    icon.style.transform = '';
+                    icon.textContent = 'refresh';
+
+                }
+
+                startY = 0;
+                currentY = 0;
+
+            });
+
+        });
+    </script>
 </body>
+
 </html>
