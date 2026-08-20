@@ -1,12 +1,19 @@
 {
+    "id": "/",
     "name": "Tomoro Absensi",
     "short_name": "Absensi",
     "description": "Sistem Absensi Karyawan Tomoro",
-    "start_url": "/admin/dashboard",
+
+    "start_url": "/",
+    "scope": "/",
+
     "display": "standalone",
+
     "background_color": "#ffffff",
     "theme_color": "#e91e63",
+
     "orientation": "portrait-primary",
+
     "icons": [
         {
             "src": "/icons/icon-192.png",

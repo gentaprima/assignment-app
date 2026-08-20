@@ -77,7 +77,7 @@ class DashboardController extends Controller
 
         $branches = Branch::withCount([
             'users as employee_count' => function ($query) {
-                $query->where('role', 'employee');
+                $query->whereIn('role', ['employee','pic']);
             }
         ])
             ->latest()
@@ -325,14 +325,11 @@ class DashboardController extends Controller
         ->where('user_id', $user->id)
         ->whereDate('work_date', $today)
         ->first();
-
-
         /*
         |--------------------------------------------------------------------------
         | ABSENSI HARI INI
         |--------------------------------------------------------------------------
         */
-
         $todayAttendance = Attendance::with('branch')
             ->where('user_id', $user->id)
             ->whereDate('check_in_at', $today)
@@ -344,10 +341,8 @@ class DashboardController extends Controller
         | JADWAL MINGGU INI
         |--------------------------------------------------------------------------
         */
-
         $startOfWeek = Carbon::now()->startOfWeek();
         $endOfWeek = Carbon::now()->endOfWeek();
-
         $weeklySchedules = ScheduleAssignment::with([
             'shift',
             'weeklySchedule.branch',
@@ -360,44 +355,33 @@ class DashboardController extends Controller
         ])
         ->orderBy('work_date')
         ->get();
-
-
         /*
         |--------------------------------------------------------------------------
         | STATISTIK MINGGU INI
         |--------------------------------------------------------------------------
         */
-
         $totalSchedule = $weeklySchedules->count();
-
         $totalPresent = $weeklySchedules
             ->filter(function ($schedule) {
                 return $schedule->attendance?->check_in_at !== null;
             })
             ->count();
-
         $totalOff = $weeklySchedules
             ->where('status', 'off')
             ->count();
-
         $totalLeave = $weeklySchedules
             ->where('status', 'leave')
             ->count();
-
-
         /*
         |--------------------------------------------------------------------------
         | AKTIVITAS ABSENSI TERBARU
         |--------------------------------------------------------------------------
         */
-
         $recentAttendances = Attendance::with('branch')
             ->where('user_id', $user->id)
             ->latest('check_in_at')
             ->take(5)
             ->get();
-
-
         return view('dashboard.employee', compact(
             'todaySchedule',
             'todayAttendance',

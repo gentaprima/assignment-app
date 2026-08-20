@@ -397,105 +397,112 @@ class AttendanceController extends Controller
     public function checkOut(Request $request)
     {
         $user = auth()->user();
-
         $request->validate([
             'latitude' => ['required', 'numeric'],
             'longitude' => ['required', 'numeric'],
             'accuracy' => ['nullable', 'numeric'],
             'photo' => ['required', 'string'],
         ]);
-
         $today = Carbon::today();
-
-
         /*
         |--------------------------------------------------------------------------
         | Cari attendance hari ini
         |--------------------------------------------------------------------------
         */
-
         $attendance = Attendance::where('user_id', $user->id)
             ->whereDate('check_in_at', $today)
             ->first();
-
         if (!$attendance) {
-
             return response()->json([
                 'success' => false,
                 'message' => 'Anda belum melakukan absen masuk.'
             ], 422);
         }
-
-
         /*
         |--------------------------------------------------------------------------
         | Cek sudah checkout
         |--------------------------------------------------------------------------
         */
-
         if ($attendance->check_out_at) {
-
             return response()->json([
                 'success' => false,
                 'message' => 'Anda sudah melakukan absen pulang hari ini.'
             ], 422);
         }
+        /*
+        |--------------------------------------------------------------------------
+        | Cek waktu checkout
+        |--------------------------------------------------------------------------
+        */
 
-
+        $schedule = ScheduleAssignment::where('user_id', $user->id)
+            ->whereDate('work_date', $today)
+            ->first();
+        if (!$schedule) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Jadwal kerja hari ini tidak ditemukan.',
+            ], 422);
+        }
+        if (!$schedule->end_time) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Jam pulang belum ditentukan.',
+            ], 422);
+        }
+        $checkOutTime = Carbon::parse($schedule->end_time)
+            ->setDate(
+                $today->year,
+                $today->month,
+                $today->day
+            );
+        if (now()->lt($checkOutTime)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Belum waktunya melakukan absen pulang.',
+                'available_at' => $checkOutTime->format('H:i'),
+            ], 422);
+        }
         /*
         |--------------------------------------------------------------------------
         | Cari branch
         |--------------------------------------------------------------------------
         */
-
         $branch = $attendance->branch;
-
         if (!$branch) {
-
             return response()->json([
                 'success' => false,
                 'message' => 'Cabang absensi tidak ditemukan.'
             ], 422);
         }
-
-
         /*
         |--------------------------------------------------------------------------
         | GPS
         |--------------------------------------------------------------------------
         */
-
         $latitude = (float) $request->latitude;
         $longitude = (float) $request->longitude;
         $accuracy = $request->accuracy
             ? (float) $request->accuracy
             : null;
-
-
         /*
         |--------------------------------------------------------------------------
         | Hitung jarak
         |--------------------------------------------------------------------------
         */
-
         $distance = $this->calculateDistance(
             $latitude,
             $longitude,
             (float) $branch->latitude,
             (float) $branch->longitude
         );
-
-
         /*
         |--------------------------------------------------------------------------
         | Validasi radius
         |--------------------------------------------------------------------------
         */
-
         $radius = (float) $branch->radius;
-
         if ($distance > $radius) {
-
             return response()->json([
                 'success' => false,
                 'message' => 'Anda berada di luar area cabang.',
@@ -503,52 +510,37 @@ class AttendanceController extends Controller
                 'radius' => $radius,
             ], 422);
         }
-
-
         /*
         |--------------------------------------------------------------------------
         | Simpan checkout
         |--------------------------------------------------------------------------
         */
-
         $photo = $request->photo;
-
         if (!preg_match('/^data:image\/(\w+);base64,/', $photo, $type)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Format foto tidak valid.',
             ], 422);
         }
-
         $photo = substr($photo, strpos($photo, ',') + 1);
-
         $photo = base64_decode($photo);
-
         if ($photo === false) {
             return response()->json([
                 'success' => false,
                 'message' => 'Foto tidak dapat diproses.',
             ], 422);
         }
-
         $filename = 'attendance_' . Str::uuid() . '.jpg';
-
         $path = 'attendance/' . now()->format('Y/m/d') . '/' . $filename;
-
         Storage::disk('public')->put($path, $photo);
-
-
         $attendance->update([
             'check_out_at' => now(),
-
             'check_out_latitude' => $latitude,
             'check_out_longitude' => $longitude,
             'check_out_accuracy' => $accuracy,
             'check_out_distance' => $distance,
             'check_out_photo' => $path,
         ]);
-
-
         return response()->json([
             'success' => true,
             'message' => 'Absen pulang berhasil.',

@@ -11,7 +11,23 @@ use App\Http\Controllers\ScheduleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect()->route('login');
+    if (!auth()->check()) {
+        return redirect()->route('login');
+    }
+
+    return match (auth()->user()->role) {
+
+        'admin' => redirect()->route('admin.dashboard'),
+
+        'manager' => redirect()->route('manager.dashboard'),
+
+        'pic' => redirect()->route('pic.dashboard'),
+
+        'employee' => redirect()->route('employee.dashboard'),
+
+        default => abort(403, 'Role pengguna tidak valid.'),
+
+    };
 });
 
 // Route::get('/dashboard', function () {

@@ -46,7 +46,7 @@
                         </div>
                     </div>
                 @endif
-                <form method="POST" action="{{ route('login') }}">
+                <form id="loginForm" method="POST" action="{{ route('login') }}">
                     @csrf
                     {{-- EMAIL --}}
                     <div>
@@ -111,12 +111,33 @@
 
                     </div>
                     {{-- BUTTON --}}
-                    <button type="submit"
-                        class="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-red-600 px-5 text-sm font-bold text-white shadow-lg shadow-red-600/20 transition duration-200 hover:bg-red-700 hover:shadow-red-600/30 active:scale-[0.98]">
-                        <span class="material-icons text-[20px]">
-                            login
+                    <button id="loginButton" type="submit"
+                        class="mt-6 flex h-12 w-full items-center justify-center rounded-xl bg-red-600 px-5 text-sm font-bold text-white shadow-lg shadow-red-600/20 transition duration-200 hover:bg-red-700 hover:shadow-red-600/30 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70">
+
+                        {{-- NORMAL --}}
+                        <span id="loginButtonContent" class="flex items-center justify-center gap-2">
+                            <span class="material-icons block w-5 text-center text-[20px] leading-none">
+                                login
+                            </span>
+
+                            <span class="leading-none">
+                                Masuk
+                            </span>
                         </span>
-                        Masuk
+
+
+                        {{-- LOADING --}}
+                        <span id="loginButtonLoading" class="hidden items-center justify-center gap-2">
+                            {{-- SPINNER --}}
+                            <span
+                                class="block h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white">
+                            </span>
+
+                            <span class="leading-none">
+                                Memproses...
+                            </span>
+                        </span>
+
                     </button>
                 </form>
             </div>
@@ -131,6 +152,50 @@
 
     {{-- PASSWORD TOGGLE --}}
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const form = document.getElementById('loginForm');
+            const button = document.getElementById('loginButton');
+
+            const normalContent =
+                document.getElementById('loginButtonContent');
+
+            const loadingContent =
+                document.getElementById('loginButtonLoading');
+
+
+            if (
+                !form ||
+                !button ||
+                !normalContent ||
+                !loadingContent
+            ) {
+                return;
+            }
+
+
+            form.addEventListener('submit', function () {
+
+                button.disabled = true;
+
+                button.setAttribute(
+                    'aria-busy',
+                    'true'
+                );
+
+
+                // NORMAL HILANG
+                normalContent.classList.add('hidden');
+
+
+                // LOADING MUNCUL
+                loadingContent.classList.remove('hidden');
+
+                loadingContent.classList.add('flex');
+
+            });
+
+        });
 
         function togglePassword() {
 
@@ -138,20 +203,83 @@
             const icon = document.getElementById('passwordIcon');
 
             if (password.type === 'password') {
-
                 password.type = 'text';
-
                 icon.textContent = 'visibility_off';
-
             } else {
-
                 password.type = 'password';
-
                 icon.textContent = 'visibility';
-
             }
 
         }
+
+        /*
+    |--------------------------------------------------------------------------
+    | LOGIN LOADING
+    |--------------------------------------------------------------------------
+    */
+
+        document.addEventListener(
+            'DOMContentLoaded',
+            function () {
+
+                const form =
+                    document.getElementById('loginForm');
+
+                const button =
+                    document.getElementById('loginButton');
+
+                const content =
+                    document.getElementById('loginButtonContent');
+
+                const loading =
+                    document.getElementById('loginButtonLoading');
+
+
+                if (!form || !button) {
+                    return;
+                }
+
+
+                form.addEventListener(
+                    'submit',
+                    function () {
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | Disable tombol
+                        |--------------------------------------------------------------------------
+                        */
+
+                        button.disabled = true;
+                        button.setAttribute(
+                            'aria-busy',
+                            'true'
+                        );
+                        /*
+                        |--------------------------------------------------------------------------
+                        | Sembunyikan tampilan normal
+                        |--------------------------------------------------------------------------
+                        */
+                        content.classList.add(
+                            'hidden'
+                        );
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | Tampilkan loading
+                        |--------------------------------------------------------------------------
+                        */
+                        loading.classList.remove(
+                            'hidden'
+                        );
+                        loading.classList.add(
+                            'flex'
+                        );
+                    }
+                );
+
+            }
+        );
 
     </script>
 

@@ -284,11 +284,15 @@
 
 
                             @if($attendance?->check_in_at)
-
-                                <span class="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
-                                    Berhasil
-                                </span>
-
+                                @if ($attendance?->status == "late")
+                                    <span class="rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-700">
+                                        Terlambat
+                                    </span>
+                                @else
+                                    <span class="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
+                                        Berhasil
+                                    </span>
+                                @endif
                             @else
 
                                 <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
@@ -546,16 +550,16 @@
                     @elseif(!$attendance?->check_in_at)
 
                         <!-- <button type="button" onclick="getLocationAndCheckIn()"
-                                                                                                                                                                                                                                                                            class="flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-red-600 font-semibold text-white shadow-sm transition hover:bg-red-700 active:bg-red-800">
+                                                                                                                                                                                                                                                                                        class="flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-red-600 font-semibold text-white shadow-sm transition hover:bg-red-700 active:bg-red-800">
 
-                                                                                                                                                                                                                                                                            <span class="material-icons">
-                                                                                                                                                                                                                                                                                fingerprint
-                                                                                                                                                                                                                                                                            </span>
+                                                                                                                                                                                                                                                                                        <span class="material-icons">
+                                                                                                                                                                                                                                                                                            fingerprint
+                                                                                                                                                                                                                                                                                        </span>
 
-                                                                                                                                                                                                                                                                            ABEN MASUK
+                                                                                                                                                                                                                                                                                        ABEN MASUK
 
-                                                                                                                                                                                                                                                                        </button>
-                                                                                                                                                                                                                                                                         -->
+                                                                                                                                                                                                                                                                                    </button>
+                                                                                                                                                                                                                                                                                     -->
 
                         <button type="button" onclick="startAttendance('check-in')"
                             class="flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-red-600 font-semibold text-white shadow-sm transition hover:bg-red-700 active:bg-red-800">
@@ -569,15 +573,15 @@
                     @elseif(!$attendance?->check_out_at)
 
                         <!-- <button type="button" onclick="getLocationAndCheckOut()"
-                                                                                                                                                                                                                                                                class="flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-orange-500 font-semibold text-white shadow-sm transition hover:bg-orange-600 active:bg-orange-700">
+                                                                                                                                                                                                                                                                            class="flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-orange-500 font-semibold text-white shadow-sm transition hover:bg-orange-600 active:bg-orange-700">
 
-                                                                                                                                                                                                                                                                <span class="material-icons">
-                                                                                                                                                                                                                                                                    fingerprint
-                                                                                                                                                                                                                                                                </span>
+                                                                                                                                                                                                                                                                            <span class="material-icons">
+                                                                                                                                                                                                                                                                                fingerprint
+                                                                                                                                                                                                                                                                            </span>
 
-                                                                                                                                                                                                                                                                ABSEN PULANG
+                                                                                                                                                                                                                                                                            ABSEN PULANG
 
-                                                                                                                                                                                                                                                            </button> -->
+                                                                                                                                                                                                                                                                        </button> -->
 
                         <button type="button" onclick="startAttendance('check-out')"
                             class="flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-orange-500 font-semibold text-white shadow-sm transition hover:bg-orange-600 active:bg-orange-700">
@@ -907,11 +911,11 @@
             );
             button.disabled = true;
             button.innerHTML = `
-                                                                                <span class="material-icons animate-spin align-middle">
-                                                                                    refresh
-                                                                                </span>
-                                                                                Memproses...
-                                                                            `;
+                                                                                    <span class="material-icons animate-spin align-middle">
+                                                                                        refresh
+                                                                                    </span>
+                                                                                    Memproses...
+                                                                                `;
             try {
                 updateLocationStatus(
                     'Mengambil lokasi GPS...',
@@ -988,48 +992,48 @@
                             title: 'Absen Berhasil',
 
                             html: `
-                                                                                                <div class="text-center">
+                                                                                                    <div class="text-center">
 
-                                                                                                    <p class="text-gray-600">
-                                                                                                        Anda berhasil melakukan absen masuk.
-                                                                                                    </p>
-
-                                                                                                    <div class="mt-4 rounded-xl bg-orange-50 p-4">
-
-                                                                                                        <p class="text-sm text-gray-500">
-                                                                                                            Status
+                                                                                                        <p class="text-gray-600">
+                                                                                                            Anda berhasil melakukan absen masuk.
                                                                                                         </p>
 
-                                                                                                        <p class="mt-1 font-semibold text-orange-600">
-                                                                                                            Terlambat
-                                                                                                        </p>
+                                                                                                        <div class="mt-4 rounded-xl bg-orange-50 p-4">
 
-                                                                                                        <p class="mt-2 text-sm text-gray-600">
-                                                                                                            ${data.attendance.notes ?? ''}
-                                                                                                        </p>
+                                                                                                            <p class="text-sm text-gray-500">
+                                                                                                                Status
+                                                                                                            </p>
+
+                                                                                                            <p class="mt-1 font-semibold text-orange-600">
+                                                                                                                Terlambat
+                                                                                                            </p>
+
+                                                                                                            <p class="mt-2 text-sm text-gray-600">
+                                                                                                                ${data.attendance.notes ?? ''}
+                                                                                                            </p>
+
+                                                                                                        </div>
+
+                                                                                                        <div class="mt-4 space-y-1 text-sm text-gray-500">
+
+                                                                                                            <p>
+                                                                                                                Jam masuk:
+                                                                                                                <strong class="text-gray-900">
+                                                                                                                    ${data.attendance.check_in_at}
+                                                                                                                </strong>
+                                                                                                            </p>
+
+                                                                                                            <p>
+                                                                                                                Jarak:
+                                                                                                                <strong class="text-gray-900">
+                                                                                                                    ${data.attendance.distance} meter
+                                                                                                                </strong>
+                                                                                                            </p>
+
+                                                                                                        </div>
 
                                                                                                     </div>
-
-                                                                                                    <div class="mt-4 space-y-1 text-sm text-gray-500">
-
-                                                                                                        <p>
-                                                                                                            Jam masuk:
-                                                                                                            <strong class="text-gray-900">
-                                                                                                                ${data.attendance.check_in_at}
-                                                                                                            </strong>
-                                                                                                        </p>
-
-                                                                                                        <p>
-                                                                                                            Jarak:
-                                                                                                            <strong class="text-gray-900">
-                                                                                                                ${data.attendance.distance} meter
-                                                                                                            </strong>
-                                                                                                        </p>
-
-                                                                                                    </div>
-
-                                                                                                </div>
-                                                                                            `,
+                                                                                                `,
 
                             showConfirmButton: true,
 
@@ -1051,28 +1055,28 @@
                             title: 'Absen Berhasil',
 
                             html: `
-                                                                                                <p class="text-gray-600">
-                                                                                                    Absen masuk berhasil dicatat.
-                                                                                                </p>
-
-                                                                                                <div class="mt-4 space-y-2 text-sm text-gray-500">
-
-                                                                                                    <p>
-                                                                                                        Jam masuk:
-                                                                                                        <strong class="text-gray-900">
-                                                                                                            ${data.attendance.check_in_at}
-                                                                                                        </strong>
+                                                                                                    <p class="text-gray-600">
+                                                                                                        Absen masuk berhasil dicatat.
                                                                                                     </p>
 
-                                                                                                    <p>
-                                                                                                        Jarak:
-                                                                                                        <strong class="text-gray-900">
-                                                                                                            ${data.attendance.distance} meter
-                                                                                                        </strong>
-                                                                                                    </p>
+                                                                                                    <div class="mt-4 space-y-2 text-sm text-gray-500">
 
-                                                                                                </div>
-                                                                                            `,
+                                                                                                        <p>
+                                                                                                            Jam masuk:
+                                                                                                            <strong class="text-gray-900">
+                                                                                                                ${data.attendance.check_in_at}
+                                                                                                            </strong>
+                                                                                                        </p>
+
+                                                                                                        <p>
+                                                                                                            Jarak:
+                                                                                                            <strong class="text-gray-900">
+                                                                                                                ${data.attendance.distance} meter
+                                                                                                            </strong>
+                                                                                                        </p>
+
+                                                                                                    </div>
+                                                                                                `,
 
                             showConfirmButton: true,
 
@@ -1103,28 +1107,28 @@
                         title: 'Absen Pulang Berhasil',
 
                         html: `
-                                                                                            <p class="text-gray-600">
-                                                                                                Absen pulang berhasil dicatat.
-                                                                                            </p>
-
-                                                                                            <div class="mt-4 space-y-2 text-sm text-gray-500">
-
-                                                                                                <p>
-                                                                                                    Jam pulang:
-                                                                                                    <strong class="text-gray-900">
-                                                                                                        ${data.attendance.check_out_at}
-                                                                                                    </strong>
+                                                                                                <p class="text-gray-600">
+                                                                                                    Absen pulang berhasil dicatat.
                                                                                                 </p>
 
-                                                                                                <p>
-                                                                                                    Jarak:
-                                                                                                    <strong class="text-gray-900">
-                                                                                                        ${data.attendance.distance} meter
-                                                                                                    </strong>
-                                                                                                </p>
+                                                                                                <div class="mt-4 space-y-2 text-sm text-gray-500">
 
-                                                                                            </div>
-                                                                                        `,
+                                                                                                    <p>
+                                                                                                        Jam pulang:
+                                                                                                        <strong class="text-gray-900">
+                                                                                                            ${data.attendance.check_out_at}
+                                                                                                        </strong>
+                                                                                                    </p>
+
+                                                                                                    <p>
+                                                                                                        Jarak:
+                                                                                                        <strong class="text-gray-900">
+                                                                                                            ${data.attendance.distance} meter
+                                                                                                        </strong>
+                                                                                                    </p>
+
+                                                                                                </div>
+                                                                                            `,
 
                         showConfirmButton: true,
 
@@ -1169,8 +1173,8 @@
                 button.disabled = false;
 
                 button.innerHTML = `
-                                                                                    Konfirmasi Absen
-                                                                                `;
+                                                                                        Konfirmasi Absen
+                                                                                    `;
 
             }
         }
@@ -1292,14 +1296,14 @@
             }
 
             statusElement.innerHTML = `
-                                                                                <span class="material-icons ${className}">
-                                                                                    ${icon}
-                                                                                </span>
+                                                                                    <span class="material-icons ${className}">
+                                                                                        ${icon}
+                                                                                    </span>
 
-                                                                                <span class="${className}">
-                                                                                    ${message}
-                                                                                </span>
-                                                                            `;
+                                                                                    <span class="${className}">
+                                                                                        ${message}
+                                                                                    </span>
+                                                                                `;
         }
 
 

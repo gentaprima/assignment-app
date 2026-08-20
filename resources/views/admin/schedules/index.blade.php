@@ -207,74 +207,46 @@
         {{-- ======================================== --}}
 
         <div class="space-y-4">
-
             @foreach($days as $day)
-
                 <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-
                     {{-- DAY HEADER --}}
-
                     <div
                         class="flex flex-col gap-3 border-b border-gray-200 bg-gray-50 p-5 sm:flex-row sm:items-center sm:justify-between">
-
                         <div>
-
                             <p class="text-xs font-medium uppercase tracking-wide text-gray-500">
                                 {{ $day['date']->translatedFormat('l') }}
                             </p>
-
                             <h3 class="mt-1 text-lg font-bold text-gray-900">
                                 {{ $day['date']->translatedFormat('d F Y') }}
                             </h3>
-
                         </div>
-
-
                         <button type="button" onclick="openScheduleModal('{{ $day['date']->format('Y-m-d') }}')"
                             class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
-
                             <span class="material-icons text-lg">
                                 add
                             </span>
-
                             Tambah
-
                         </button>
 
                     </div>
-
-
                     {{-- ASSIGNMENTS --}}
-
                     @if($day['assignments']->count())
-
                         <div class="divide-y divide-gray-100">
-
                             @foreach($day['assignments'] as $assignment)
-
                                 <div class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
-
                                     <div class="flex min-w-0 items-center gap-4">
-
                                         <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-50">
-
                                             <span class="material-icons text-red-600">
                                                 person
                                             </span>
-
                                         </div>
-
-
                                         <div class="min-w-0">
-
                                             <p class="truncate font-semibold text-gray-900">
                                                 {{ $assignment->user->name }}
                                             </p>
-
                                             <p class="text-sm text-gray-500">
                                                 {{ $assignment->user->email }}
                                             </p>
-
                                         </div>
 
                                     </div>
@@ -408,76 +380,51 @@
     {{-- ======================================== --}}
 
     <div id="scheduleModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
-
         <div class="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-xl"
             onclick="event.stopPropagation()">
-
             {{-- HEADER --}}
             <div class="flex shrink-0 items-center justify-between border-b border-gray-200 p-5">
-
                 <div>
                     <h3 class="text-lg font-bold text-gray-900">
                         Tambah Jadwal
                     </h3>
-
                     <p class="mt-1 text-sm text-gray-500">
                         Tambahkan jadwal kerja karyawan.
                     </p>
                 </div>
-
                 <button type="button" onclick="closeScheduleModal()"
                     class="flex h-9 w-9 items-center justify-center rounded-xl text-gray-400 hover:bg-gray-100 hover:text-gray-600">
                     <span class="material-icons">
                         close
                     </span>
                 </button>
-
             </div>
-
-
             {{-- FORM --}}
             <form method="POST" action="{{ auth()->user()->role === 'pic'
         ? route('pic.schedules.store')
         : route('admin.schedules.store') }}" class="flex min-h-0 flex-1 flex-col">
-
                 @csrf
-
-
                 {{-- AREA SCROLL --}}
                 <div class="min-h-0 flex-1 overflow-y-auto p-5">
-
                     <div class="space-y-5">
-
                         {{-- CABANG --}}
                         <div>
-
                             <label class="mb-2 block text-sm font-medium text-gray-700">
                                 Cabang
                             </label>
-
                             <select name="branch_id" id="modalBranch" required
                                 class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:border-red-500 focus:ring-red-500"
                                 {{ auth()->user()->role === 'pic' ? 'disabled' : '' }}>
-
                                 @foreach($branches as $branch)
-
                                     <option value="{{ $branch->id }}" {{ $branchId == $branch->id ? 'selected' : '' }}>
                                         {{ $branch->code }} - {{ $branch->name }}
                                     </option>
-
                                 @endforeach
-
                             </select>
-
                             @if(auth()->user()->role === 'pic')
-
                                 <input type="hidden" name="branch_id" value="{{ auth()->user()->branch_id }}">
-
                             @endif
-
                         </div>
-
-
                         {{-- KARYAWAN --}}
                         <div>
 
@@ -503,8 +450,6 @@
                             </select>
 
                         </div>
-
-
                         {{-- TANGGAL --}}
                         <div class="w-full">
 
@@ -516,24 +461,18 @@
                                 class="block h-12 w-full min-w-0 appearance-none rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-500/20">
 
                         </div>
-
-
                         {{-- JAM MASUK --}}
                         <div>
                             <label class="mb-2 block text-sm font-medium text-gray-700">
                                 Jam Masuk
                             </label>
-
                             <input type="text" name="start_time" id="startTime" placeholder="07:00" maxlength="5"
                                 autocomplete="off"
                                 class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:border-red-500 focus:ring-red-500">
-
                             <p class="mt-1 text-xs text-gray-400">
                                 Format 24 jam, contoh: 07:00
                             </p>
                         </div>
-
-
                         {{-- JAM PULANG --}}
                         <div>
                             <label class="mb-2 block text-sm font-medium text-gray-700">
@@ -548,35 +487,23 @@
                                 Format 24 jam, contoh: 15:00
                             </p>
                         </div>
-
-
                         {{-- STATUS --}}
                         <div>
-
                             <label class="mb-2 block text-sm font-medium text-gray-700">
                                 Status
                             </label>
-
                             <select name="status" required
                                 class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:border-red-500 focus:ring-red-500">
 
                                 <option value="scheduled">
                                     Terjadwal
                                 </option>
-
                                 <option value="off">
                                     Off
                                 </option>
-
-                                <option value="leave">
-                                    Izin
-                                </option>
-
                             </select>
 
                         </div>
-
-
                         {{-- CATATAN --}}
                         <div>
 
@@ -592,31 +519,22 @@
                     </div>
 
                 </div>
-
-
                 {{-- BUTTON --}}
                 <div class="shrink-0 border-t border-gray-200 bg-white p-5">
-
                     <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-
                         <button type="button" onclick="closeScheduleModal()"
                             class="rounded-xl border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">
                             Batal
                         </button>
-
                         <button type="submit"
                             class="rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white hover:bg-red-700">
                             Simpan Jadwal
                         </button>
-
                     </div>
 
                 </div>
-
             </form>
-
         </div>
-
     </div>
 
 
