@@ -75,6 +75,11 @@ Route::middleware('auth')->group(function () {
         'index'
     ])->name('reports.index');
 
+    Route::get('/reports/export', [
+        ReportController::class,
+        'export'
+    ])->name('reports.export');
+
     // Employee & PIC
     Route::middleware('role:employee,pic')->group(function () {
 

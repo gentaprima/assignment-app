@@ -23,7 +23,7 @@
                         {{ auth()->user()->role === 'admin'
         ? 'Pantau kehadiran seluruh cabang.'
         : 'Pantau kehadiran cabang Anda.'
-                                                    }}
+                                                        }}
                     </p>
 
                 </div>
@@ -168,18 +168,42 @@
 
                     <div class="flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:justify-end">
 
+                        {{-- RESET --}}
                         <a href="{{ route('reports.index') }}"
-                            class="w-full rounded-xl border border-gray-300 px-5 py-3 text-center text-sm font-semibold text-gray-700 transition hover:bg-gray-50 sm:w-auto">
+                            class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-300 px-5 py-3 text-center text-sm font-semibold text-gray-700 transition hover:bg-gray-50 sm:w-auto">
+
+                            <span class="material-icons text-[18px]">
+                                restart_alt
+                            </span>
+
                             Reset
+
                         </a>
 
+
+                        {{-- EXPORT EXCEL --}}
+                        <button type="submit" formaction="{{ route('reports.export') }}" formmethod="GET"
+                            class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-700 active:scale-[0.98] sm:w-auto">
+
+                            <span class="material-icons text-[18px]">
+                                table_view
+                            </span>
+
+                            Export Excel
+
+                        </button>
+
+
+                        {{-- FILTER --}}
                         <button type="submit"
-                            class="w-full rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-700 sm:w-auto">
-                            <span class="material-icons mr-1 align-middle text-[18px]">
+                            class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-700 active:scale-[0.98] sm:w-auto">
+
+                            <span class="material-icons text-[18px]">
                                 filter_alt
                             </span>
 
                             Tampilkan Laporan
+
                         </button>
 
                     </div>
@@ -565,9 +589,9 @@
                                                 @if($attendance?->check_in_photo)
 
                                                     <button type="button" onclick="showAttendancePhoto(
-                                                                                '{{ asset('storage/' . $attendance->check_in_photo) }}',
-                                                                                'Foto Absen Masuk - {{ $report->user?->name }}'
-                                                                            )"
+                                                                                                '{{ asset('storage/' . $attendance->check_in_photo) }}',
+                                                                                                'Foto Absen Masuk - {{ $report->user?->name }}'
+                                                                                            )"
                                                         class="inline-flex shrink-0 items-center gap-1 rounded-lg bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-600 transition hover:bg-blue-100">
 
                                                         <span class="material-icons text-[16px]">
@@ -584,9 +608,9 @@
                                                 @if($attendance?->check_out_photo)
 
                                                     <button type="button" onclick="showAttendancePhoto(
-                                                                                '{{ asset('storage/' . $attendance->check_out_photo) }}',
-                                                                                'Foto Absen Pulang - {{ $report->user?->name }}'
-                                                                            )"
+                                                                                                '{{ asset('storage/' . $attendance->check_out_photo) }}',
+                                                                                                'Foto Absen Pulang - {{ $report->user?->name }}'
+                                                                                            )"
                                                         class="inline-flex shrink-0 items-center gap-1 rounded-lg bg-orange-50 px-3 py-2 text-xs font-semibold text-orange-600 transition hover:bg-orange-100">
 
                                                         <span class="material-icons text-[16px]">
@@ -880,9 +904,9 @@
                                         @if($attendance?->check_in_photo)
 
                                             <button type="button" onclick="showAttendancePhoto(
-                                                                        '{{ asset('storage/' . $attendance->check_in_photo) }}',
-                                                                        'Foto Absen Masuk - {{ $report->user?->name }}'
-                                                                    )"
+                                                                                        '{{ asset('storage/' . $attendance->check_in_photo) }}',
+                                                                                        'Foto Absen Masuk - {{ $report->user?->name }}'
+                                                                                    )"
                                                 class="inline-flex max-w-full shrink-0 items-center gap-1 rounded-lg bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-600">
 
                                                 <span class="material-icons shrink-0 text-[16px]">
@@ -902,9 +926,9 @@
                                         @if($attendance?->check_out_photo)
 
                                             <button type="button" onclick="showAttendancePhoto(
-                                                                        '{{ asset('storage/' . $attendance->check_out_photo) }}',
-                                                                        'Foto Absen Pulang - {{ $report->user?->name }}'
-                                                                    )"
+                                                                                        '{{ asset('storage/' . $attendance->check_out_photo) }}',
+                                                                                        'Foto Absen Pulang - {{ $report->user?->name }}'
+                                                                                    )"
                                                 class="inline-flex max-w-full shrink-0 items-center gap-1 rounded-lg bg-orange-50 px-3 py-2 text-xs font-semibold text-orange-600">
 
                                                 <span class="material-icons shrink-0 text-[16px]">

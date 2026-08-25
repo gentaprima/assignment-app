@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AttendanceReportExport;
 use App\Models\Attendance;
 use App\Models\Branch;
 use App\Models\ScheduleAssignment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -202,7 +204,7 @@ class ReportController extends Controller
 
             return $assignment;
         });
-        
+
 
 
         /*
@@ -279,4 +281,140 @@ class ReportController extends Controller
             'totalLeave'
         ));
     }
+
+    public function export(Request $request)
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDASI
+        |--------------------------------------------------------------------------
+        */
+
+        $request->validate([
+
+            'start_date' => [
+                'nullable',
+                'date',
+            ],
+
+            'end_date' => [
+                'nullable',
+                'date',
+                'after_or_equal:start_date',
+            ],
+
+            'branch_id' => [
+                'nullable',
+                'exists:branches,id',
+            ],
+
+            'status' => [
+                'nullable',
+                'in:present,late,absent,leave',
+            ],
+
+        ]);
+
+
+        $user = $request->user();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PERIODE
+        |--------------------------------------------------------------------------
+        */
+
+        $startDate =
+            $request->input(
+                'start_date',
+                now()
+                    ->startOfMonth()
+                    ->toDateString()
+            );
+
+        $endDate =
+            $request->input(
+                'end_date',
+                now()
+                    ->endOfMonth()
+                    ->toDateString()
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER CABANG
+        |--------------------------------------------------------------------------
+        */
+
+        $branchId = null;
+
+        if ($user->role === 'admin') {
+
+            if ($request->filled('branch_id')) {
+
+                $branchId =
+                    (int) $request->branch_id;
+            }
+
+        } else {
+
+            $branchId =
+                $user->branch_id;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | NAMA FILE
+        |--------------------------------------------------------------------------
+        */
+
+        $filename =
+            'laporan-absensi_'
+            . $startDate
+            . '_sampai_'
+            . $endDate
+            . '.xlsx';
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DOWNLOAD
+        |--------------------------------------------------------------------------
+        */
+
+        return Excel::download(
+
+            new AttendanceReportExport(
+
+                userId:
+                $user->id,
+
+                userRole:
+                $user->role,
+
+                userBranchId:
+                $user->branch_id,
+
+                startDate:
+                $startDate,
+
+                endDate:
+                $endDate,
+
+                branchId:
+                $branchId,
+
+                status:
+                $request->input('status'),
+
+            ),
+
+            $filename
+
+        );
+    }
+
 }
