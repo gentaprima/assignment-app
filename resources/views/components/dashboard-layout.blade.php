@@ -168,6 +168,18 @@
                                 <span class="material-icons">assessment</span>
                                 <span>Laporan</span>
                             </a>
+                            <a href="{{ route('admin.products.index') }}" class="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 text-gray-600 hover:bg-gray-50
+                                                            {{ request()->routeIs('admin.products.index')
+                    ? 'bg-red-50 text-red-600'
+                    : 'text-gray-600 hover:bg-gray-50' }}">
+                                <span class="material-icons text-xl">
+                                    people
+                                </span>
+
+                                <span class="font-medium">
+                                    Products
+                                </span>
+                            </a>
 
                 @endif
                 {{-- ========================= --}}
