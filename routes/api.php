@@ -18,5 +18,5 @@ Route::prefix('pos')->group(function () {
     // Method: GET -> http://domain-laravel-anda.com/api/pos/transactions
     Route::get('/transactions', [PosController::class, 'history']);
 
-    Route::get('/pos/reports/products', [PosController::class, 'productReport']);
+    Route::get('/reports/products', [PosController::class, 'productReport']);
 });
