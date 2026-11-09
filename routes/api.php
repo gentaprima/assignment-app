@@ -17,4 +17,6 @@ Route::prefix('pos')->group(function () {
     // URL untuk mengambil riwayat transaksi
     // Method: GET -> http://domain-laravel-anda.com/api/pos/transactions
     Route::get('/transactions', [PosController::class, 'history']);
+
+    Route::get('/pos/reports/products', [PosController::class, 'productReport']);
 });

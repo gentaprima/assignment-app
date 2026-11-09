@@ -101,4 +101,31 @@ class PosController extends Controller
             ], 500);
         }
     }
+
+    public function productReport()
+    {
+        try {
+            // Menggabungkan (sum) qty berdasarkan nama produk dan ukuran cup
+            $report = TransactionDetail::select(
+                'product_name',
+                'cup_size',
+                \DB::raw('SUM(qty) as total_qty'),
+                \DB::raw('SUM(subtotal) as total_revenue')
+            )
+                ->groupBy('product_name', 'cup_size')
+                ->orderBy('total_qty', 'desc')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $report
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memuat laporan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
