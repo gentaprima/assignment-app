@@ -91,8 +91,18 @@ class PosController extends Controller
                 ->take(20) // Ambil 20 transaksi terbaru
                 ->get();
 
+            // Hitung total keseluruhan, total Cash, dan total QRIS dari database
+            $totalAll = Transaction::sum('total_amount');
+            $totalCash = Transaction::where('payment_method', 'Cash')->sum('total_amount');
+            $totalQris = Transaction::where('payment_method', 'QRIS')->sum('total_amount');
+
             return response()->json([
                 'success' => true,
+                'summary' => [
+                    'total_all' => $totalAll,
+                    'total_cash' => $totalCash,
+                    'total_qris' => $totalQris,
+                ],
                 'data' => $transactions
             ], 200);
 
