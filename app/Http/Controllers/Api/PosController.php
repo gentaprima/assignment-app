@@ -31,7 +31,8 @@ class PosController extends Controller
             'items.*.cup_size' => 'required|string',
             'items.*.price' => 'required|numeric',
             'items.*.qty' => 'required|integer|min:1',
-            'total' => 'required|numeric'
+            'total' => 'required|numeric',
+            'payment_method' => 'required|in:Cash,QRIS'
         ]);
 
         DB::beginTransaction();
@@ -48,7 +49,8 @@ class PosController extends Controller
             $transaction = Transaction::create([
                 'invoice_number' => $invoiceNumber,
                 'total_amount' => $request->total,
-                'user_id' => auth()->id() ?? null
+                'user_id' => auth()->id() ?? null,
+                'payment_method' => $request->payment_method
             ]);
 
             foreach ($request->items as $item) {
@@ -128,4 +130,6 @@ class PosController extends Controller
             ], 500);
         }
     }
+
+
 }
