@@ -85,16 +85,18 @@ class PosController extends Controller
 
     public function history(Request $request)
     {
+        // Ambil parameter tanggal dari frontend, default hari ini (YYYY-MM-DD)
+        $date = $request->query('date', now()->toDateString());
         try {
             $transactions = Transaction::with('details')
+                ->whereDate('created_at', $date)
                 ->latest('id')
-                ->take(20) // Ambil 20 transaksi terbaru
                 ->get();
 
             // Hitung total keseluruhan, total Cash, dan total QRIS dari database
-            $totalAll = Transaction::sum('total_amount');
-            $totalCash = Transaction::where('payment_method', 'Cash')->sum('total_amount');
-            $totalQris = Transaction::where('payment_method', 'QRIS')->sum('total_amount');
+            $totalAll = Transaction::whereDate('created_at', $date)->sum('total_amount');
+            $totalCash = Transaction::whereDate('created_at', $date)->where('payment_method', 'Cash')->sum('total_amount');
+            $totalQris = Transaction::whereDate('created_at', $date)->where('payment_method', 'QRIS')->sum('total_amount');
 
             return response()->json([
                 'success' => true,
